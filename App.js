@@ -1,10 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
+import Ball from './src/Ball'
 
 export default function App() {
   return (
     <View style={styles.container}>
-      <Text>Poppy</Text>
+      <Ball />
     </View>
   )
 }
