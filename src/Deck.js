@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {
-  Animated, Dimensions, PanResponder, View
+  Animated, Dimensions, PanResponder, StyleSheet, View
 } from 'react-native'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
@@ -92,14 +92,22 @@ class Deck extends Component {
         return (
           <Animated.View
             key={item.id}
-            style={getCardStyle()}
+            style={[getCardStyle(), styles.cardStyle, { zIndex: indx * -1 }]}
             {...panResponder.panHandlers}
           >
             {renderCard(item)}
           </Animated.View>
         )
       }
-      return renderCard(item)
+      return (
+        <Animated.View
+          key={item.id}
+          style={[styles.cardStyle, { zIndex: indx * -1 }]
+        }
+        >
+          {renderCard(item)}
+        </Animated.View>
+      )
     })
   }
 
@@ -120,5 +128,12 @@ class Deck extends Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  cardStyle: {
+    position: 'absolute',
+    width: SCREEN_WIDTH
+  }
+})
 
 export default Deck
