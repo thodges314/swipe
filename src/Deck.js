@@ -32,10 +32,15 @@ const Deck = ({ data, renderCard }) => {
     }
     return renderCard(item)
   })
+  const resetPosition = () => {
+    Animated.spring(position, {
+      toValue: { x: 0, y: 0 }
+    }).start()
+  }
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderMove: (event, gesture) => { position.setValue({ x: gesture.dx, y: gesture.dy }) },
-    onPanResponderRelease: () => {}
+    onPanResponderRelease: () => { resetPosition() }
   })
   const position = new Animated.ValueXY()
 
