@@ -8,13 +8,22 @@ const SWIPE_OUT_DURATION = 250
 const SWIPE_THRESHOLD = Dimensions.get('window').width / 4
 
 class Deck extends Component {
+  static defaultProps = {
+    data: [],
+    onSwipeLeft: () => {},
+    onSwipeRight: () => {},
+    renderCard: () => {}
+  }
+
   constructor(props) {
     super(props)
 
     const position = new Animated.ValueXY()
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (event, gesture) => { position.setValue({ x: gesture.dx, y: gesture.dy }) },
+      onPanResponderMove: (event, gesture) => {
+        position.setValue({ x: gesture.dx, y: gesture.dy })
+      },
       onPanResponderRelease: (event, gesture) => {
         if (gesture.dx > SWIPE_THRESHOLD) {
           this.forceSwipe('right')
@@ -56,7 +65,7 @@ class Deck extends Component {
 
 
   onSwipeComplete = (direction) => {
-    const { index } = this.state
+    const { index, position } = this.state
     const { data, onSwipeLeft, onSwipeRight } = this.props
     const item = data[index]
     if (direction === 'right') {
@@ -64,14 +73,22 @@ class Deck extends Component {
     } else {
       onSwipeLeft(item)
     }
+    position.setValue({ x: 0, y: 0 })
+    this.setState(prevState => ({ index: prevState.index + 1 }))
   }
 
   renderCards = () => {
-    const { panResponder } = this.state
-    const { data, renderCard } = this.props
+    const { index, panResponder } = this.state
+    const { data, renderCard, renderNoMoreCards } = this.props
     const { getCardStyle } = this
-    return data.map((item, index) => {
-      if (index === 0) {
+    if (index >= data.length) {
+      return renderNoMoreCards()
+    }
+    return data.map((item, indx) => {
+      if (indx < index) {
+        return null
+      }
+      if (indx === index) {
         return (
           <Animated.View
             key={item.id}
